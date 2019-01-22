@@ -1,0 +1,37 @@
+<h1>Recent Transactions</h1>
+<table data-table-theme="default zebra">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Amount</th>
+      <th width="13%">Date</th>
+      <th>Category</th>
+      <th>Recurring expense</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @transaction_history.transactions.each do |transaction| %>
+      <tr>
+        <td><%= transaction.name %></td>
+        <td><%= Money.new(transaction.amount*100).format %></td>
+        <td><%= transaction.date %></td>
+        <td><%= transaction.category %></td>
+        <td><%= transaction.recurring? %></td>
+      </tr>
+      <tr >
+        <td colspan=5>
+          <div class="float-left">
+            <img src="<%= transaction.company_logo %>" alt="<%= transaction.company_name %>" width="120" />
+          </div>
+          <div class="float-right">
+            <p><strong>Domain</strong>: <%= transaction.company_domain %></p>
+            <p><strong>Description</strong>:<br /> <%= transaction.company_description %></p>
+            <% if transaction.recurring? %>
+              <p><strong>Last Occurance</strong>:<br /> <%= Money.new(transaction.previous_attributes.fetch(:amount) * 100).format %> on <%= transaction.previous_attributes.fetch(:date) %> to <%= transaction.previous_attributes.fetch(:name) %></p>
+            <% end %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
